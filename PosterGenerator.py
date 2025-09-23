@@ -11,6 +11,8 @@ root.title("app")
 root.geometry("300x300")
 
 directory = ""
+grain = Image.open("FinalFilmGrain.png").resize((800,800))
+
 
 def open_text_file():
     global directory
@@ -18,11 +20,12 @@ def open_text_file():
     print(directory)
 
 def color_correct(dir):
-    
+    global grain
     if(dir == ""):
         return 0
     else:
-        img = Image.open(dir).convert("L")
+        img = Image.open(dir).convert("L").resize((800,800))
+        img.paste(grain, (0,0), mask=grain)
         img = ImageOps.colorize(img, black="#24221C", white="#D3B05F")
         img.show()
        
@@ -32,7 +35,7 @@ def color_correct(dir):
 enter_button = ttk.Button(root, text="Select Image", command=open_text_file)
 enter_button.pack()
 
-flip_button = ttk.Button(root, text="Color Correct", command= lambda: color_correct(directory))
+flip_button = ttk.Button(root, text="Old West Filter", command= lambda: color_correct(directory))
 flip_button.pack()
 
 
