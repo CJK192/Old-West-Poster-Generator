@@ -16,6 +16,8 @@ root.geometry("400x400")
 
 directory = ""
 grain = Image.open("FinalFilmGrain.png").resize((800,800))
+Template = Image.open("BlankPosterTemplate.png").convert("L")
+TemplateWAmounts = Image.open("PosterWAmounts.png").convert("L")
 
 def text_maker(img):  
     text = entry.get().strip()
@@ -51,12 +53,15 @@ def color_correct(dir):
         img = Image.open(dir).convert("L").resize((800,800))
         img.paste(grain, (0,0), mask=grain)
         img = ImageOps.colorize(img, black="#24221C", white="#D3B05F")
+        temp = ImageOps.colorize(Template, black="#24221C", white="#D3B05F")
+        temp.paste(img, (864, 1152))
+        text_maker(temp)
+        temp.show()
         
         
-        text_maker(img)
         
         # Show the final image
-        img.show()
+        
 
 # Create and pack the frame
 frame = ttk.Frame(root)
