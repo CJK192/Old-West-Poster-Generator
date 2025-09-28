@@ -26,6 +26,7 @@ def text_maker(img):
     
     if text:
         # draws text
+        # :)
         draw = ImageDraw.Draw(img)
         
         #coordinates
