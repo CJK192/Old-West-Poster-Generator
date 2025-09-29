@@ -14,10 +14,16 @@ root = Tk()
 root.title("Old West Poster Generator")
 root.geometry("400x400")
 
+WIDTH = 720
+HEIGHT = 1280
+FONT_SIZE_1 = 200.0
+
+font_1 = ImageFont.truetype("WildWest.otf", FONT_SIZE_1)
+
 directory = ""
 grain = Image.open("FinalFilmGrain.png").resize((800,800))
-Template = Image.open("BlankPosterTemplate.png").convert("L")
-TemplateWAmounts = Image.open("PosterWAmounts.png").convert("L")
+Template = Image.open("BlankPosterTemplate.png").convert("L").resize((WIDTH, HEIGHT))
+TemplateWAmounts = Image.open("PosterWAmounts.png").convert("L").resize((WIDTH, HEIGHT))
 
 def text_maker(img):  
     text = entry.get().strip()
@@ -35,8 +41,10 @@ def text_maker(img):
         
         
         # Draw white text on top
-        draw.text((x, y), text, fill="white")
+        print("Stopped here lmao")
+        draw.text(((int((WIDTH / 2) - ((WIDTH / 2) / 2))), int(((HEIGHT / 4)) * 3)), text, fill="black", font=font_1)
         
+       # Ay respectfully imma comment this out 
         print("Text successfully added to image!")
 
 def open_text_file():
@@ -51,11 +59,13 @@ def color_correct(dir):
         return 0
     else:
         # Open and process the image
-        img = Image.open(dir).convert("L").resize((800,800))
+        img = Image.open(dir).convert("L").resize((int(WIDTH / 2), int(HEIGHT * (5/12))))
         img.paste(grain, (0,0), mask=grain)
         img = ImageOps.colorize(img, black="#24221C", white="#D3B05F")
         temp = ImageOps.colorize(Template, black="#24221C", white="#D3B05F")
-        temp.paste(img, (864, 1152))
+
+        #Bro it centers it ik it looks wierd but chill it lets us change the size of the poster
+        temp.paste(img, (int((WIDTH / 2) - ((WIDTH / 2) / 2)), int((HEIGHT / 2) - ((HEIGHT  * (5/12)) / 2))))
         text_maker(temp)
         temp.show()
         
@@ -69,10 +79,10 @@ frame = ttk.Frame(root)
 frame.pack(pady=20, padx=20, fill='both', expand=True)
 
 # Put ALL widgets inside the frame
-Label(frame, text="Enter poster text:").pack(pady=5)
+Label(frame, text="Enter Name:").pack(pady=5)
 entry = Entry(frame, width=20, font=("Arial", 12))
 entry.pack(pady=10)
-entry.insert(0, "WANTED")
+entry.insert(0, "")
 
 enter_button = ttk.Button(frame, text="Select Image", command=open_text_file)
 enter_button.pack(pady=10)
