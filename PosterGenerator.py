@@ -59,7 +59,8 @@ def color_correct(dir):
         return 0
     else:
         # Open and process the image
-        img = Image.open(dir).convert("L").resize((int(WIDTH / 2), int(HEIGHT * (5/12))))
+        badimg = Image.open(dir)
+        img = ImageOps.exif_transpose(badimg).convert("L").resize((int(WIDTH / 2), int(HEIGHT * (5/12))))
         img.paste(grain, (0,0), mask=grain)
         img = ImageOps.colorize(img, black="#24221C", white="#D3B05F")
         temp = ImageOps.colorize(Template, black="#24221C", white="#D3B05F")
