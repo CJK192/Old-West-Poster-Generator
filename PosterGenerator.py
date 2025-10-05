@@ -18,14 +18,15 @@ WIDTH = 720
 HEIGHT = 1280
 FONT_SIZE_1 = 200.0
 
-font_1 = ImageFont.truetype("WildWest.otf", FONT_SIZE_1)
 
 directory = ""
+font_1 = ImageFont.truetype("WildWest.otf", FONT_SIZE_1)
 grain = Image.open("FinalFilmGrain.png").resize((800,800))
 Template = Image.open("BlankPosterTemplate.png").convert("L").resize((WIDTH, HEIGHT))
 TemplateWAmounts = Image.open("PosterWAmounts.png").convert("L").resize((WIDTH, HEIGHT))
 
 def text_maker(img):  
+    global font_1
     text = entry.get().strip()
     #test
     print(f"Adding text to image: '{text}'")
@@ -35,14 +36,20 @@ def text_maker(img):
         # :)
         draw = ImageDraw.Draw(img)
         
-        #coordinates
-        x = 100  
-        y = 700  
         
+
+        if(len(text) > 6):
+            print("Stopped About where ou think")
+            font_1 = ImageFont.truetype("WildWest.otf", FONT_SIZE_1 - 8 * (len(text) - 6))
+        else:
+            font_1 = ImageFont.truetype("WildWest.otf", FONT_SIZE_1)
+
+        
+        text_len = draw.textlength(text, font=font_1)
         
         # Draw white text on top
         print("Stopped here lmao")
-        draw.text(((int((WIDTH / 2) - ((WIDTH / 2) / 2))), int(((HEIGHT / 4)) * 3)), text, fill="black", font=font_1)
+        draw.text((int(WIDTH / 2 - (text_len / 2)), int(((HEIGHT / 4)) * 3)), text, fill="black", font=font_1)
         
        # Ay respectfully imma comment this out 
         print("Text successfully added to image!")
