@@ -61,6 +61,7 @@ def open_text_file():
 
 def color_correct(dir):
     global grain
+    print(f"Selected template: {selected_template}")
     if(dir == ""):
         print("Please select an image first!")
         return 0
@@ -87,6 +88,12 @@ frame = ttk.Frame(root)
 frame.pack(pady=20, padx=20, fill='both', expand=True)
 
 # Put ALL widgets inside the frame
+template_options = ["template1", "template2", "template3", "template4", "template5"]
+dropdown = ttk.Combobox(frame, values=template_options)
+dropdown.current(0)  # Set default value
+dropdown.pack(pady=10)
+selected_template = dropdown.get()
+
 Label(frame, text="Enter Name:").pack(pady=5)
 entry = Entry(frame, width=20, font=("Arial", 12))
 entry.pack(pady=10)
