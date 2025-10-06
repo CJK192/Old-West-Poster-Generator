@@ -18,11 +18,8 @@ WIDTH = 720
 HEIGHT = 1280
 
 directory = ""
-font_1 = ImageFont.truetype("WildWest.otf", 200.0)
 grain = Image.open("FinalFilmGrain.png").resize((800,800))
 Template = Image.open("BlankPosterTemplate.png").convert("L").resize((WIDTH, HEIGHT))
-TemplateWAmounts = Image.open("PosterWAmounts.png").convert("L").resize((WIDTH, HEIGHT))
-
 
 #Draws text onto img at (ypos/100) the way down the image with customizable margins, font-size, font, and color
 #IMPORTANT: ypos is like a slider from 0-100, 100 being at the bottom, 0 being at the top. NOT A MEASURE OF PIXELS!!
