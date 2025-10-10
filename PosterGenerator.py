@@ -42,9 +42,9 @@ def draw_text(text, img, ypos, margin=80, font_size=200.0, font="WildWest.otf", 
             new_font_size -= 1
             text_len = draw.textlength(text, font=ImageFont.truetype(font, new_font_size))
  
-        draw.text((int(WIDTH / 2 - (text_len / 2)), int(((HEIGHT / 100)) * ypos)), text, fill=font_color, font=ImageFont.truetype(font, new_font_size))
+        draw.text((int(WIDTH / 2 - (text_len / 2)), int((ypos/1280) * HEIGHT)), text, fill=font_color, font=ImageFont.truetype(font, new_font_size))
     else:
-         draw.text((int(WIDTH / 2 - (text_len / 2)), int(((HEIGHT / 100)) * ypos)), text, fill=font_color, font=ImageFont.truetype(font, font_size))
+         draw.text((int(WIDTH / 2 - (text_len / 2)),int((ypos/1280) * HEIGHT)), text, fill=font_color, font=ImageFont.truetype(font, font_size))
     
    
 #Formats img correctly, can change dimensions, black and white point, add grain and even change the directory of grain
@@ -82,9 +82,9 @@ def create_poster(template, portrait):
 
             temp.paste(img, (int((WIDTH / 2) - ((WIDTH / 2) / 2)), int((HEIGHT / 2) - ((HEIGHT  * (9/24)) / 2))))
 
-            draw_text(name_entry.get().strip(), temp, 70)
-            draw_text(location_entry.get().strip(), temp, 80, font_size=100.0)
-            draw_text(f"${bounty_entry.get().strip()}", temp, 88)
+            draw_text(name_entry.get().strip(), temp, 500)
+            draw_text(location_entry.get().strip(), temp, 500, font_size=100.0)
+            draw_text(f"${bounty_entry.get().strip()}", temp, 500)
             
             temp.show()
 
