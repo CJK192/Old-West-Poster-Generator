@@ -12,7 +12,13 @@ from ttkthemes import ThemedTk #pip3 install ttkthemes
 from tkinter import Label
 from tkinter import Entry
 
+#pip3 install pillow-heif
+from pillow_heif import register_heif_opener
+
 #Initialize Tkinter window and give a name and dimensions
+
+register_heif_opener()
+
 root = ThemedTk()
 root.title("Old West Poster Generator")
 root.geometry("400x450")
@@ -31,35 +37,39 @@ background_label.image = background_photo
 
 #Contants for Width and Height of poster
 WIDTH = 720
-HEIGHT = 1280
+HEIGHT = 1000
 
 #Initialize directory of portrait. Will be selected by user later in the program
 directory = ""
 
-#Draws text onto img at (ypos/100) the way down the image with customizable margins, font-size, font, and color
-#IMPORTANT: ypos is like a slider from 0-100, 100 being at the bottom, 0 being at the top. NOT A MEASURE OF PIXELS!!
+#Draws text onto img at (ypos/1280) the way down the image with customizable margins, font-size, font, and color
 
-def draw_text(text, img, ypos, margin=80, font_size=200.0, font="WildWest.otf", font_color="black"):  
+def draw_text(text, img, ypos, margin=80, font_size=170.0, font="WildWest.otf", font_color="black"):  
+
     global WIDTH
+
     draw = ImageDraw.Draw(img)
     
-    text_len = draw.textlength(text, font=ImageFont.truetype(font, font_size))
+    
+    text_len = draw.textlength(text=text, font=ImageFont.truetype(font, font_size))
+    text_height = ImageFont.truetype(font, font_size).getbbox(text=text)[3] - ImageFont.truetype(font, font_size).getbbox(text=text)[1]
 
     if(text_len > WIDTH - margin * 2):
         new_font_size = font_size
         while(text_len > WIDTH - margin * 2):
             new_font_size -= 1
             text_len = draw.textlength(text, font=ImageFont.truetype(font, new_font_size))
- 
-        draw.text((int(WIDTH / 2 - (text_len / 2)), int((ypos/1280) * HEIGHT)), text, fill=font_color, font=ImageFont.truetype(font, new_font_size))
+
+        text_height = ImageFont.truetype(font, new_font_size).getbbox(text=text)[3] - ImageFont.truetype(font, new_font_size).getbbox(text=text)[1]
+        draw.text((int(WIDTH / 2 - (text_len / 2)), int((ypos/1280) * HEIGHT) - (text_height / 2)), text, fill=font_color, font=ImageFont.truetype(font, new_font_size))
     else:
-         draw.text((int(WIDTH / 2 - (text_len / 2)),int((ypos/1280) * HEIGHT)), text, fill=font_color, font=ImageFont.truetype(font, font_size))
+         draw.text((int(WIDTH / 2 - (text_len / 2)), int((ypos/1280) * HEIGHT) - (text_height / 2)), text, fill=font_color, font=ImageFont.truetype(font, font_size))
     
    
-#Formats img correctly, can change dimensions, black and white point, add grain and even change the directory of grain
+##Formats img correctly, can change dimensions, black and white point, add grain and even change the directory of grain
 #All parameters except img optional (They come with default values)
 
-def filter_image(img, width=int(WIDTH / 2), height=int(HEIGHT * (9/24)), white_point="#D3B05F", black_point="#24221C", grain=False, grain_directory="FinalFilmGrain.png"):
+def filter_image(img, width=int(WIDTH * (2/3)), height=int(HEIGHT * (11/24)), white_point="#D3B05F", black_point="#24221C", grain=False, grain_directory="FinalFilmGrain.png"):
     bad_format = Image.open(img)
     good_format = ImageOps.exif_transpose(bad_format).convert("L").resize((width, height))
     if(grain):
@@ -89,11 +99,14 @@ def create_poster(template, portrait):
             img = filter_image(portrait, grain=True)
             temp = filter_image("BlankPosterTemplate.png", width=WIDTH, height=HEIGHT)
 
-            temp.paste(img, (int((WIDTH / 2) - ((WIDTH / 2) / 2)), int((HEIGHT / 2) - ((HEIGHT  * (9/24)) / 2))))
+            temp.paste(img, (int((WIDTH / 2) - ((WIDTH * (2/3)) / 2)), int((HEIGHT / 2) - ((HEIGHT  * (11/24)) / 2))))
 
-            draw_text(name_entry.get().strip(), temp, 500)
-            draw_text(location_entry.get().strip(), temp, 500, font_size=100.0)
-            draw_text(f"${bounty_entry.get().strip()}", temp, 500)
+            draw_text(name_entry.get().strip(), temp, 960)
+            draw_text(location_entry.get().strip(), temp, 1077, font_size=100.0)
+            draw_text(f"${bounty_entry.get().strip()}", temp, 1200, font_size=150)
+
+           # line = ImageDraw.Draw(temp)
+           # line.line((0, 960, WIDTH, 960), fill="red")
             
             temp.show()
 
