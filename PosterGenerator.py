@@ -8,7 +8,7 @@ from PIL import ImageTk
 from tkinter import Tk
 from tkinter import filedialog as fd
 from tkinter import ttk
-from ttkthemes import ThemedTk
+from ttkthemes import ThemedTk #pip3 install ttkthemes
 from tkinter import Label
 from tkinter import Entry
 
