@@ -161,20 +161,6 @@ def create_poster(template, portrait):
             draw_text(f"${bounty_entry.get().strip()}", temp, 88, font_size=115)
             
             temp.show()
-
-        case "Template_6":
-    
-            img = filter_image(portrait, grain=True)
-            temp = filter_image("5.png", width=WIDTH, height=HEIGHT)
-
-            temp.paste(img, (int((WIDTH / 2) - ((WIDTH / 2) / 2)), int((HEIGHT / 2) - ((HEIGHT  * (9/24)) / 2))))
-
-            draw_text(name_entry.get().strip(), temp, 70)
-            draw_text(location_entry.get().strip(), temp, 80, font_size=100.0)
-            draw_text(f"${bounty_entry.get().strip()}", temp, 88, font_size=115)
-            
-            temp.show()
-
         case _:
 
             print("Please select a valid template!")
