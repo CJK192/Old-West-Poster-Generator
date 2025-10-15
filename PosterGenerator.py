@@ -44,7 +44,7 @@ directory = ""
 
 #Draws text onto img at (ypos/1280) the way down the image with customizable margins, font-size, font, and color
 
-def draw_text(text, img, ypos, margin=80, font_size=170.0, font="WildWest.otf", font_color="black"):  
+def draw_text(text, img, ypos, margin=80, font_size=145.0, font="WildWest.otf", font_color="black"):  
 
     global WIDTH
 
@@ -99,11 +99,11 @@ def create_poster(template, portrait):
             img = filter_image(portrait, grain=True)
             temp = filter_image("BlankPosterTemplate.png", width=WIDTH, height=HEIGHT)
 
-            temp.paste(img, (int((WIDTH / 2) - ((WIDTH * (2/3)) / 2)), int((HEIGHT / 2) - ((HEIGHT  * (11/24)) / 2))))
+            temp.paste(img, (int((WIDTH / 2) - ((WIDTH * (2/3)) / 2)), int((HEIGHT / 2) - ((HEIGHT  * (11/24)) / 2)) - 7))
 
-            draw_text(name_entry.get().strip(), temp, 960)
-            draw_text(location_entry.get().strip(), temp, 1077, font_size=100.0)
-            draw_text(f"${bounty_entry.get().strip()}", temp, 1200, font_size=150)
+            draw_text(name_entry.get().strip(), temp, 1003)
+            draw_text(location_entry.get().strip(), temp, 1110, font_size=100.0)
+            draw_text(f"${bounty_entry.get().strip()}", temp, 1220, font_size=115)
 
            # line = ImageDraw.Draw(temp)
            # line.line((0, 960, WIDTH, 960), fill="red")
@@ -119,7 +119,7 @@ def create_poster(template, portrait):
 
             draw_text(name_entry.get().strip(), temp, 70)
             draw_text(location_entry.get().strip(), temp, 80, font_size=100.0)
-            draw_text(f"${bounty_entry.get().strip()}", temp, 88)
+            draw_text(f"${bounty_entry.get().strip()}", temp, 88, font_size=115)
             
             temp.show()
 
@@ -132,7 +132,7 @@ def create_poster(template, portrait):
 
             draw_text(name_entry.get().strip(), temp, 70)
             draw_text(location_entry.get().strip(), temp, 80, font_size=100.0)
-            draw_text(f"${bounty_entry.get().strip()}", temp, 88)
+            draw_text(f"${bounty_entry.get().strip()}", temp, 88, font_size=115)
             
             temp.show()
 
@@ -145,7 +145,7 @@ def create_poster(template, portrait):
 
             draw_text(name_entry.get().strip(), temp, 70)
             draw_text(location_entry.get().strip(), temp, 80, font_size=100.0)
-            draw_text(f"${bounty_entry.get().strip()}", temp, 88)
+            draw_text(f"${bounty_entry.get().strip()}", temp, 88, font_size=115)
             
             temp.show()
 
@@ -158,7 +158,7 @@ def create_poster(template, portrait):
 
             draw_text(name_entry.get().strip(), temp, 70)
             draw_text(location_entry.get().strip(), temp, 80, font_size=100.0)
-            draw_text(f"${bounty_entry.get().strip()}", temp, 88)
+            draw_text(f"${bounty_entry.get().strip()}", temp, 88, font_size=115)
             
             temp.show()
 
@@ -171,7 +171,7 @@ def create_poster(template, portrait):
 
             draw_text(name_entry.get().strip(), temp, 70)
             draw_text(location_entry.get().strip(), temp, 80, font_size=100.0)
-            draw_text(f"${bounty_entry.get().strip()}", temp, 88)
+            draw_text(f"${bounty_entry.get().strip()}", temp, 88, font_size=115)
             
             temp.show()
 
