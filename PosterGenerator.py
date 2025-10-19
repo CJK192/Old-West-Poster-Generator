@@ -88,6 +88,13 @@ def open_text_file():
 #Template is the directory (string) of the template, portait is the directory (string) of the pic you wanna use
 
 def create_poster(template, portrait):
+
+
+    #*********************************************************************
+    #REPLACE THIS W ERROR MESSAGE L8R
+    if(portrait == ""):
+        portrait = "background.jpg"
+
     global grain
 
     match template:
@@ -99,10 +106,10 @@ def create_poster(template, portrait):
             img = filter_image(portrait, grain=True)
             temp = filter_image("BlankPosterTemplate.png", width=WIDTH, height=HEIGHT)
 
-            temp.paste(img, (int((WIDTH / 2) - ((WIDTH * (2/3)) / 2)), int((HEIGHT / 2) - ((HEIGHT  * (11/24)) / 2)) - 7))
+            temp.paste(img, (int((WIDTH / 2) - (img.width / 2)), int((HEIGHT / 2) - ((HEIGHT  * (11/24)) / 2)) - 7))
 
             draw_text(name_entry.get().strip(), temp, 1003)
-            draw_text(location_entry.get().strip(), temp, 1110, font_size=100.0)
+            draw_text(location_entry.get().strip(), temp, 1113, font_size=98.0)
             draw_text(f"${bounty_entry.get().strip()}", temp, 1220, font_size=115)
 
            # line = ImageDraw.Draw(temp)
@@ -112,53 +119,53 @@ def create_poster(template, portrait):
 
         case "Template_2":
     
-            img = filter_image(portrait, grain=True)
+            img = filter_image(portrait, grain=True, height=int(HEIGHT * (11/24)) - 20)
             temp = filter_image("1.png", width=WIDTH, height=HEIGHT)
 
-            temp.paste(img, (int((WIDTH / 2) - ((WIDTH / 2) / 2)), int((HEIGHT / 2) - ((HEIGHT  * (9/24)) / 2))))
+            temp.paste(img, (int((WIDTH / 2) - (img.width / 2)), int((HEIGHT / 2) + 62 - ((HEIGHT  * (9/24)) / 2))))
 
-            draw_text(name_entry.get().strip(), temp, 70)
-            draw_text(location_entry.get().strip(), temp, 80, font_size=100.0)
-            draw_text(f"${bounty_entry.get().strip()}", temp, 88, font_size=115)
+            draw_text(name_entry.get().strip(), temp, 1100, font_size=100, font_color="#CEC9BE", margin=110)
+            draw_text(location_entry.get().strip(), temp, 1190, font_size=100.0, font_color="#CEC9BE", margin=110)
+            draw_text(f"REWARD: ${bounty_entry.get().strip()}", temp, 413, font_size=90, margin=95)
             
             temp.show()
 
         case "Template_3":
     
-            img = filter_image(portrait, grain=True)
+            img = filter_image(portrait, grain=True, width=int(WIDTH * (2/3)) - 70, height=int(HEIGHT * (11/24)) - 90)
             temp = filter_image("2.png", width=WIDTH, height=HEIGHT)
 
-            temp.paste(img, (int((WIDTH / 2) - ((WIDTH / 2) / 2)), int((HEIGHT / 2) - ((HEIGHT  * (9/24)) / 2))))
+            temp.paste(img, (int((WIDTH / 2) - (img.width / 2)), int((HEIGHT / 2) - ((HEIGHT  * (9/24)) / 2)) - 20))
 
-            draw_text(name_entry.get().strip(), temp, 70)
-            draw_text(location_entry.get().strip(), temp, 80, font_size=100.0)
-            draw_text(f"${bounty_entry.get().strip()}", temp, 88, font_size=115)
+            draw_text(name_entry.get().strip(), temp, 925, font_size=100, margin=145)
+            draw_text(location_entry.get().strip(), temp, 1050, font_size=90.0, font_color="#CEC9BE", margin=145)
+            draw_text(f"${bounty_entry.get().strip()} REWARD", temp, 1190, font_size=115, margin=85)
             
             temp.show()
 
         case "Template_4":
     
-            img = filter_image(portrait, grain=True)
+            img = filter_image(portrait, grain=True, width=int(WIDTH * (2/3)) - 20, height=int(HEIGHT * (11/24)) - 35)
             temp = filter_image("3.png", width=WIDTH, height=HEIGHT)
 
-            temp.paste(img, (int((WIDTH / 2) - ((WIDTH / 2) / 2)), int((HEIGHT / 2) - ((HEIGHT  * (9/24)) / 2))))
+            temp.paste(img, (int((WIDTH / 2) - (img.width / 2)), int((HEIGHT / 2) - ((HEIGHT  * (9/24)) / 2)) + 30))
 
-            draw_text(name_entry.get().strip(), temp, 70)
-            draw_text(location_entry.get().strip(), temp, 80, font_size=100.0)
-            draw_text(f"${bounty_entry.get().strip()}", temp, 88, font_size=115)
+            draw_text(name_entry.get().strip(), temp, 1125 , margin=110, font_size=105)
+            draw_text(location_entry.get().strip(), temp, 1025, font_size=90.0, margin=130)
+            draw_text(f"REWARD: ${bounty_entry.get().strip()}", temp, 365, font_size=115, margin=130)
             
             temp.show()
 
         case "Template_5":
     
-            img = filter_image(portrait, grain=True)
+            img = filter_image(portrait, grain=True, width=int(WIDTH * (2/3)) - 55, height=int(HEIGHT * (11/24)) - 70)
             temp = filter_image("4.png", width=WIDTH, height=HEIGHT)
 
-            temp.paste(img, (int((WIDTH / 2) - ((WIDTH / 2) / 2)), int((HEIGHT / 2) - ((HEIGHT  * (9/24)) / 2))))
+            temp.paste(img, (int((WIDTH / 2) - (img.width / 2)), int((HEIGHT / 2) - ((HEIGHT  * (9/24)) / 2)) + 50))
 
-            draw_text(name_entry.get().strip(), temp, 70)
-            draw_text(location_entry.get().strip(), temp, 80, font_size=100.0)
-            draw_text(f"${bounty_entry.get().strip()}", temp, 88, font_size=115)
+            draw_text(name_entry.get().strip(), temp, 397, font_size=120, margin= 140)
+            draw_text(location_entry.get().strip(), temp, 1024, font_size=90.0, font_color="#CEC9BE", margin= 140)
+            draw_text(f"${bounty_entry.get().strip()}", temp, 1180, font_size=105, margin= 105)
             
             temp.show()
         case _:
