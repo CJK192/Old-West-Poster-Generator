@@ -1,16 +1,11 @@
 #Import Needed Libraries/Modules
 import os
-from PIL import Image
-from PIL import ImageOps
-from PIL import ImageDraw
-from PIL import ImageFont
-from PIL import ImageTk
-from tkinter import Tk
 from tkinter import filedialog as fd
-from tkinter import ttk
 from ttkthemes import ThemedTk
-from tkinter import Label
-from tkinter import Entry
+from tkinter import Tk, Label, Entry, Button, PhotoImage, StringVar, ttk, OptionMenu
+from PIL import Image, ImageOps, ImageDraw, ImageFont, ImageTk
+
+
 
 #Initialize Tkinter window and give a name and dimensions
 root = ThemedTk()
@@ -170,13 +165,27 @@ def create_poster(template, portrait):
 label_bg = 'SystemButtonFace'  # This should match the system default
 
 #Template dropdown to select template
-Label(root, text="Choose a template:", bg=label_bg, fg='black', font=('Arial', 14)).place(relx=0.5, rely=0.1, anchor='center')
+
 template_options = ["Template_1", "Template_2", "Template_3", "Template_4", "Template_5"]
-dropdown = ttk.Combobox(root, values=template_options)
-dropdown.current(0)  # Set default value
-dropdown.place(relx=0.5, rely=0.15, anchor='center')
+images = {t: PhotoImage(file=f"{t.split('_')[1]}.png").subsample(8,8) for t in template_options}
+
+var = StringVar(value=template_options[0])
+
+def change_image(*_):
+    img = images[var.get()]
+    image_label.config(image=img)
+    image_label.image = img
+
+ttk.Label(root, text="Choose a template:").pack(pady=10)
+dropdown = OptionMenu(root, var, template_options[0], *template_options, command=change_image)
+dropdown.pack()
+image_label = ttk.Label(root)
+image_label.pack(pady=20)
 
 
+#photo button code test
+#template_photo = PhotoImage(file="1.png")
+#Button(root, text = 'Click Me !', image = template_photo).pack(side = 'bottom', pady = 5)
 
 
 
