@@ -226,7 +226,7 @@ images = {t: PhotoImage (file="BlankPosterTemplate.png" if t == "Template_1" els
 
 
 
-var = StringVar(value=template_options[0])
+
 
 
 
