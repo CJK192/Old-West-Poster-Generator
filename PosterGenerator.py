@@ -10,6 +10,11 @@ from PIL import Image, ImageOps, ImageDraw, ImageFont, ImageTk
 #pip3 install pillow-heif
 from pillow_heif import register_heif_opener
 
+from google import genai
+from io import BytesIO
+
+# Configure the client with your API key
+client = genai.Client(api_key="AIzaSyBCzw3NGQhjfNlydeCyW0N-9Itx1F9ZxtY")
 
 #This needs to be run to get HEIF file support
 register_heif_opener()
@@ -63,7 +68,23 @@ def draw_text(text, img, ypos, margin=80, font_size=145.0, font="WildWest.otf", 
    else:
         draw.text((int(WIDTH / 2 - (text_len / 2)), int((ypos/1280) * HEIGHT) - (text_height / 2)), text, fill=font_color, font=ImageFont.truetype(font, font_size))
   
- 
+def edit_image(image):
+    prompt = prompt_entry.get()
+    if prompt == "":
+        return image
+    image = Image.open(image)
+    response = client.models.generate_content(
+        model = "gemini-2.5-flash-image",
+        contents=[prompt, image],
+    )
+    for part in response.candidates[0].content.parts:
+        if part.text is not None:
+            print(part.text)
+        elif part.inline_data is not None:
+            edited_image = Image.open(BytesIO(part.inline_data.data))
+            edited_image.save("edited_image.png")
+            return "edited_image.png"
+
 #Formats img correctly, can change dimensions, black and white point, add grain and even change the directory of grain
 #All parameters except img optional (They come with default values)
 
@@ -124,7 +145,7 @@ def create_poster(template, portrait):
                 return 0
             case "Template_1":
         
-                img = filter_image(crop_face(portrait,  35, 35), grain=True)
+                img = filter_image(crop_face(edit_image(portrait), 67, 67), grain=True)
                 temp = filter_image("BlankPosterTemplate.png", width=WIDTH, height=HEIGHT)
 
                 temp.paste(img, (int((WIDTH / 2) - (img.width / 2)), int((HEIGHT / 2) - ((HEIGHT  * (11/24)) / 2)) - 7))
@@ -142,7 +163,7 @@ def create_poster(template, portrait):
 
             case "Template_2":
         
-                img = filter_image(crop_face(portrait,  35, 35), grain=True, height=int(HEIGHT * (11/24)) - 20)
+                img = filter_image(crop_face(edit_image(portrait), 67, 67), grain=True, height=int(HEIGHT * (11/24)) - 20)
                 temp = filter_image("1.png", width=WIDTH, height=HEIGHT)
 
 
@@ -158,7 +179,7 @@ def create_poster(template, portrait):
 
             case "Template_3":
         
-                img = filter_image(crop_face(portrait,  35, 35), grain=True, width=int(WIDTH * (2/3)) - 70, height=int(HEIGHT * (11/24)) - 90)
+                img = filter_image(crop_face(edit_image(portrait),  67, 67), grain=True, width=int(WIDTH * (2/3)) - 70, height=int(HEIGHT * (11/24)) - 90)
                 temp = filter_image("2.png", width=WIDTH, height=HEIGHT)
 
 
@@ -174,7 +195,7 @@ def create_poster(template, portrait):
 
             case "Template_4":
         
-                img = filter_image(crop_face(portrait,  35, 35), grain=True, width=int(WIDTH * (2/3)) - 20, height=int(HEIGHT * (11/24)) - 35)
+                img = filter_image(crop_face(edit_image(portrait), 67, 67), grain=True, width=int(WIDTH * (2/3)) - 20, height=int(HEIGHT * (11/24)) - 35)
                 temp = filter_image("3.png", width=WIDTH, height=HEIGHT)
 
 
@@ -190,7 +211,7 @@ def create_poster(template, portrait):
 
             case "Template_5":
         
-                img = filter_image(crop_face(portrait, 35, 35), grain=True, width=int(WIDTH * (2/3)) - 55, height=int(HEIGHT * (11/24)) - 70)
+                img = filter_image(crop_face(edit_image(portrait), 67, 67), grain=True, width=int(WIDTH * (2/3)) - 55, height=int(HEIGHT * (11/24)) - 70)
                 temp = filter_image("4.png", width=WIDTH, height=HEIGHT)
 
 
@@ -259,6 +280,11 @@ bounty_entry = Entry(root, width=20, font=("Arial", 12))
 bounty_entry.place(relx=0.5, rely=0.51, anchor='center')
 bounty_entry.insert(0, "")
 
+Label(root, text="Enter Prompt", bg=label_bg, fg='black', font=('Arial', 14)).place(relx=0.5, rely=0.75, anchor='center')
+prompt_entry = Entry(root, width=20, font=("Arial", 12))
+prompt_entry.place(relx=0.5, rely=0.8, anchor='center')
+prompt_entry.insert(0, "")
+
 #Button for selecting directory for portrait image
 select_button.place(relx=0.5, rely=0.70, anchor='center')
 
@@ -269,3 +295,4 @@ create_button.place(relx=0.5, rely=0.85, anchor='center')
 
 
 root.mainloop()
+
