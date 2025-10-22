@@ -5,27 +5,21 @@ from ttkthemes import ThemedTk
 from tkinter import Tk, Label, Entry, Button, PhotoImage, StringVar, ttk, OptionMenu
 from PIL import Image, ImageOps, ImageDraw, ImageFont, ImageTk
 
-
-
-
 #pip3 install pillow-heif
 from pillow_heif import register_heif_opener
 
 
-#Initialize Tkinter window and give a name and dimensions
-
-
+#This needs to be run to get HEIF file support
 register_heif_opener()
 
-
+#Initialize Tkinter window and give a name and dimensions
 root = ThemedTk()
 root.title("Old West Poster Generator")
 root.geometry("500x550")
 
 
-# Use a minimal theme and set root to a color that matches your background
 root.set_theme("default")
-root.configure(bg='#2B1B17')  # Dark brown that should blend with western theme
+root.configure(bg='#2B1B17') 
 
 
 # Load background image
@@ -36,7 +30,6 @@ background_label = Label(root, image=background_photo)
 background_label.place(x=0, y=0, relwidth=1, relheight=1)
 background_label.image = background_photo
 
-
 #Contants for Width and Height of poster
 WIDTH = 720
 HEIGHT = 1000
@@ -45,22 +38,16 @@ HEIGHT = 1000
 #Initialize directory of portrait. Will be selected by user later in the program
 directory = ""
 
-
 #Draws text onto img at (ypos/1280) the way down the image with customizable margins, font-size, font, and color
-
 
 def draw_text(text, img, ypos, margin=80, font_size=145.0, font="WildWest.otf", font_color="black"): 
 
-
    global WIDTH
-
 
    draw = ImageDraw.Draw(img)
   
-  
    text_len = draw.textlength(text=text, font=ImageFont.truetype(font, font_size))
    text_height = ImageFont.truetype(font, font_size).getbbox(text=text)[3] - ImageFont.truetype(font, font_size).getbbox(text=text)[1]
-
 
    if(text_len > WIDTH - margin * 2):
        new_font_size = font_size
@@ -75,9 +62,8 @@ def draw_text(text, img, ypos, margin=80, font_size=145.0, font="WildWest.otf", 
         draw.text((int(WIDTH / 2 - (text_len / 2)), int((ypos/1280) * HEIGHT) - (text_height / 2)), text, fill=font_color, font=ImageFont.truetype(font, font_size))
   
  
-##Formats img correctly, can change dimensions, black and white point, add grain and even change the directory of grain
+#Formats img correctly, can change dimensions, black and white point, add grain and even change the directory of grain
 #All parameters except img optional (They come with default values)
-
 
 def filter_image(img, width=int(WIDTH * (2/3)), height=int(HEIGHT * (11/24)), white_point="#D3B05F", black_point="#24221C", grain=False, grain_directory="FinalFilmGrain.png"):
    bad_format = Image.open(img)
@@ -90,13 +76,14 @@ def filter_image(img, width=int(WIDTH * (2/3)), height=int(HEIGHT * (11/24)), wh
 
 #sets global directory variable (for portrait image) to file path of user's choice
 
-
 def open_text_file():
    global directory
    directory = fd.askopenfilename()
 
 
+#This needs to be initialized here to be changed in the create poster function
 
+select_button = ttk.Button(root, text="Select Image", command=open_text_file)
 
 #Allows for template selection with optimization
 #Template is the directory (string) of the template, portait is the directory (string) of the pic you wanna use
@@ -104,116 +91,102 @@ def open_text_file():
 
 def create_poster(template, portrait):
 
+    global grain
+    
+    if(portrait == ""):
+        select_button.config(text="Please select an image!")
+    else:
+
+        match template:
+            case "": 
+                print("Please select an image first!")
+                return 0
+            case "Template_1":
+        
+                img = filter_image(portrait, grain=True)
+                temp = filter_image("BlankPosterTemplate.png", width=WIDTH, height=HEIGHT)
+
+                temp.paste(img, (int((WIDTH / 2) - (img.width / 2)), int((HEIGHT / 2) - ((HEIGHT  * (11/24)) / 2)) - 7))
+
+                draw_text(name_entry.get().strip(), temp, 1003)
+                draw_text(location_entry.get().strip(), temp, 1113, font_size=98.0)
+                draw_text(f"${bounty_entry.get().strip()}", temp, 1220, font_size=115)
+                
+                temp.show()
 
 
-
-   #*********************************************************************
-   #REPLACE THIS W ERROR MESSAGE L8R
-   if(portrait == ""):
-       portrait = "background.jpg"
-
-
-   global grain
+            case "Template_2":
+        
+                img = filter_image(portrait, grain=True, height=int(HEIGHT * (11/24)) - 20)
+                temp = filter_image("1.png", width=WIDTH, height=HEIGHT)
 
 
-   match template:
-       case "": 
-           print("Please select an image first!")
-           return 0
-       case "Template_1":
-  
-           img = filter_image(portrait, grain=True)
-           temp = filter_image("BlankPosterTemplate.png", width=WIDTH, height=HEIGHT)
+                temp.paste(img, (int((WIDTH / 2) - (img.width / 2)), int((HEIGHT / 2) + 62 - ((HEIGHT  * (9/24)) / 2))))
 
 
-           temp.paste(img, (int((WIDTH / 2) - (img.width / 2)), int((HEIGHT / 2) - ((HEIGHT  * (11/24)) / 2)) - 7))
+                draw_text(name_entry.get().strip(), temp, 1100, font_size=100, font_color="#CEC9BE", margin=110)
+                draw_text(location_entry.get().strip(), temp, 1190, font_size=100.0, font_color="#CEC9BE", margin=110)
+                draw_text(f"REWARD: ${bounty_entry.get().strip()}", temp, 413, font_size=90, margin=95)
+                
+                temp.show()
 
 
-           draw_text(name_entry.get().strip(), temp, 1003)
-           draw_text(location_entry.get().strip(), temp, 1113, font_size=98.0)
-           draw_text(f"${bounty_entry.get().strip()}", temp, 1220, font_size=115)
+            case "Template_3":
+        
+                img = filter_image(portrait, grain=True, width=int(WIDTH * (2/3)) - 70, height=int(HEIGHT * (11/24)) - 90)
+                temp = filter_image("2.png", width=WIDTH, height=HEIGHT)
 
 
-          # line = ImageDraw.Draw(temp)
-          # line.line((0, 960, WIDTH, 960), fill="red")
-          
-           temp.show()
+                temp.paste(img, (int((WIDTH / 2) - (img.width / 2)), int((HEIGHT / 2) - ((HEIGHT  * (9/24)) / 2)) - 20))
 
 
-       case "Template_2":
-  
-           img = filter_image(portrait, grain=True, height=int(HEIGHT * (11/24)) - 20)
-           temp = filter_image("1.png", width=WIDTH, height=HEIGHT)
+                draw_text(name_entry.get().strip(), temp, 925, font_size=100, margin=145)
+                draw_text(location_entry.get().strip(), temp, 1050, font_size=90.0, font_color="#CEC9BE", margin=145)
+                draw_text(f"${bounty_entry.get().strip()} REWARD", temp, 1190, font_size=115, margin=85)
+                
+                temp.show()
 
 
-           temp.paste(img, (int((WIDTH / 2) - (img.width / 2)), int((HEIGHT / 2) + 62 - ((HEIGHT  * (9/24)) / 2))))
+            case "Template_4":
+        
+                img = filter_image(portrait, grain=True, width=int(WIDTH * (2/3)) - 20, height=int(HEIGHT * (11/24)) - 35)
+                temp = filter_image("3.png", width=WIDTH, height=HEIGHT)
 
 
-           draw_text(name_entry.get().strip(), temp, 1100, font_size=100, font_color="#CEC9BE", margin=110)
-           draw_text(location_entry.get().strip(), temp, 1190, font_size=100.0, font_color="#CEC9BE", margin=110)
-           draw_text(f"REWARD: ${bounty_entry.get().strip()}", temp, 413, font_size=90, margin=95)
-          
-           temp.show()
+                temp.paste(img, (int((WIDTH / 2) - (img.width / 2)), int((HEIGHT / 2) - ((HEIGHT  * (9/24)) / 2)) + 30))
 
 
-       case "Template_3":
-  
-           img = filter_image(portrait, grain=True, width=int(WIDTH * (2/3)) - 70, height=int(HEIGHT * (11/24)) - 90)
-           temp = filter_image("2.png", width=WIDTH, height=HEIGHT)
+                draw_text(name_entry.get().strip(), temp, 1125 , margin=110, font_size=105)
+                draw_text(location_entry.get().strip(), temp, 1025, font_size=90.0, margin=130)
+                draw_text(f"REWARD: ${bounty_entry.get().strip()}", temp, 365, font_size=115, margin=130)
+                
+                temp.show()
 
 
-           temp.paste(img, (int((WIDTH / 2) - (img.width / 2)), int((HEIGHT / 2) - ((HEIGHT  * (9/24)) / 2)) - 20))
+            case "Template_5":
+        
+                img = filter_image(portrait, grain=True, width=int(WIDTH * (2/3)) - 55, height=int(HEIGHT * (11/24)) - 70)
+                temp = filter_image("4.png", width=WIDTH, height=HEIGHT)
 
 
-           draw_text(name_entry.get().strip(), temp, 925, font_size=100, margin=145)
-           draw_text(location_entry.get().strip(), temp, 1050, font_size=90.0, font_color="#CEC9BE", margin=145)
-           draw_text(f"${bounty_entry.get().strip()} REWARD", temp, 1190, font_size=115, margin=85)
-          
-           temp.show()
+                temp.paste(img, (int((WIDTH / 2) - (img.width / 2)), int((HEIGHT / 2) - ((HEIGHT  * (9/24)) / 2)) + 50))
 
 
-       case "Template_4":
-  
-           img = filter_image(portrait, grain=True, width=int(WIDTH * (2/3)) - 20, height=int(HEIGHT * (11/24)) - 35)
-           temp = filter_image("3.png", width=WIDTH, height=HEIGHT)
+                draw_text(name_entry.get().strip(), temp, 397, font_size=120, margin= 140)
+                draw_text(location_entry.get().strip(), temp, 1024, font_size=90.0, font_color="#CEC9BE", margin= 140)
+                draw_text(f"${bounty_entry.get().strip()}", temp, 1180, font_size=105, margin= 105)
+                
+                temp.show()
+            case _:
 
 
-           temp.paste(img, (int((WIDTH / 2) - (img.width / 2)), int((HEIGHT / 2) - ((HEIGHT  * (9/24)) / 2)) + 30))
+                print("Please select a valid template!")
 
 
-           draw_text(name_entry.get().strip(), temp, 1125 , margin=110, font_size=105)
-           draw_text(location_entry.get().strip(), temp, 1025, font_size=90.0, margin=130)
-           draw_text(f"REWARD: ${bounty_entry.get().strip()}", temp, 365, font_size=115, margin=130)
-          
-           temp.show()
-
-
-       case "Template_5":
-  
-           img = filter_image(portrait, grain=True, width=int(WIDTH * (2/3)) - 55, height=int(HEIGHT * (11/24)) - 70)
-           temp = filter_image("4.png", width=WIDTH, height=HEIGHT)
-
-
-           temp.paste(img, (int((WIDTH / 2) - (img.width / 2)), int((HEIGHT / 2) - ((HEIGHT  * (9/24)) / 2)) + 50))
-
-
-           draw_text(name_entry.get().strip(), temp, 397, font_size=120, margin= 140)
-           draw_text(location_entry.get().strip(), temp, 1024, font_size=90.0, font_color="#CEC9BE", margin= 140)
-           draw_text(f"${bounty_entry.get().strip()}", temp, 1180, font_size=105, margin= 105)
-          
-           temp.show()
-       case _:
-
-
-           print("Please select a valid template!")
-
-
-# Use system default colors that should be transparent-ish, or use a color that matches your background
-label_bg = 'SystemButtonFace'  # This should match the system default
-
+# Use system default colors 
+label_bg = 'SystemButtonFace'  
 
 #Template dropdown to select template
-
 
 template_options = ["Template_1", "Template_2", "Template_3", "Template_4", "Template_5"]
 var = StringVar(value=template_options[0])
@@ -224,19 +197,10 @@ images = {t: PhotoImage (file="BlankPosterTemplate.png" if t == "Template_1" els
                         "4.png").subsample(12,12) for t in template_options}
 
 
-
-
-
-
-
-
-
 def change_image(*_):
   img = images[var.get()]
   image_label.config(image=img)
   image_label.image = img
-
-
 
 
 Label(root, text="Choose a template:", bg=label_bg, fg="black", font=('Arial', 14)).pack(pady=10)
@@ -245,21 +209,10 @@ dropdown.pack()
 image_label = ttk.Label(root)
 image_label.place(relx=1.0, rely=0.0, anchor='ne', x=-10, y=10)
 
-
-
-
 change_image()
 
-
-selected_value = var.get() #stores selected value
-
-
-
-
-
-
-
-
+#stores selected value
+selected_value = var.get() 
 
 
 #Entry for name
@@ -284,7 +237,7 @@ bounty_entry.insert(0, "")
 
 
 #Button for selecting directory for portrait image
-select_button = ttk.Button(root, text="Select Image", command=open_text_file)
+
 select_button.place(relx=0.5, rely=0.6, anchor='center')
 
 
@@ -294,4 +247,3 @@ create_button.place(relx=0.5, rely=0.7, anchor='center')
 
 
 root.mainloop()
-
