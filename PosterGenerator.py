@@ -1,5 +1,7 @@
 
 import os
+import cv2
+from deepface import DeepFace
 from tkinter import filedialog as fd
 from ttkthemes import ThemedTk
 from tkinter import Tk, Label, Entry, Button, PhotoImage, StringVar, ttk, OptionMenu
@@ -80,6 +82,23 @@ def open_text_file():
    global directory
    directory = fd.askopenfilename()
 
+def crop_face(face, x=0, y=0):
+
+    heic_image = Image.open(face)
+    heic_image.save("temp_converted_image.png", format="PNG")
+
+    detected_faces = DeepFace.extract_faces(img_path="temp_converted_image.png", enforce_detection=False)
+
+    for face_info in detected_faces:
+        facial_area = face_info['facial_area']
+        face_x = facial_area['x']
+        face_y = facial_area['y']
+        face_w = facial_area['w']
+        face_h = facial_area['h']
+
+    cropped_face = Image.open(face).crop((face_x - x, face_y - y, face_x + face_w + x, face_y + face_h + y))
+    cropped_face.save("temp_cropped_face.png", format="PNG")
+    return "temp_cropped_face.png"
 
 #This needs to be initialized here to be changed in the create poster function
 
@@ -92,18 +111,20 @@ select_button = ttk.Button(root, text="Select Image", command=open_text_file)
 def create_poster(template, portrait):
 
     global grain
-    
+
     if(portrait == ""):
         select_button.config(text="Please select an image!")
     else:
-
+       
+        
+        
         match template:
             case "": 
                 print("Please select an image first!")
                 return 0
             case "Template_1":
         
-                img = filter_image(portrait, grain=True)
+                img = filter_image(crop_face(portrait,  35, 35), grain=True)
                 temp = filter_image("BlankPosterTemplate.png", width=WIDTH, height=HEIGHT)
 
                 temp.paste(img, (int((WIDTH / 2) - (img.width / 2)), int((HEIGHT / 2) - ((HEIGHT  * (11/24)) / 2)) - 7))
@@ -111,13 +132,17 @@ def create_poster(template, portrait):
                 draw_text(name_entry.get().strip(), temp, 1003)
                 draw_text(location_entry.get().strip(), temp, 1113, font_size=98.0)
                 draw_text(f"${bounty_entry.get().strip()}", temp, 1220, font_size=115)
+                temp.save("GeneratedPoster.png")
+
+                
+
                 
                 temp.show()
 
 
             case "Template_2":
         
-                img = filter_image(portrait, grain=True, height=int(HEIGHT * (11/24)) - 20)
+                img = filter_image(crop_face(portrait,  35, 35), grain=True, height=int(HEIGHT * (11/24)) - 20)
                 temp = filter_image("1.png", width=WIDTH, height=HEIGHT)
 
 
@@ -133,7 +158,7 @@ def create_poster(template, portrait):
 
             case "Template_3":
         
-                img = filter_image(portrait, grain=True, width=int(WIDTH * (2/3)) - 70, height=int(HEIGHT * (11/24)) - 90)
+                img = filter_image(crop_face(portrait,  35, 35), grain=True, width=int(WIDTH * (2/3)) - 70, height=int(HEIGHT * (11/24)) - 90)
                 temp = filter_image("2.png", width=WIDTH, height=HEIGHT)
 
 
@@ -149,7 +174,7 @@ def create_poster(template, portrait):
 
             case "Template_4":
         
-                img = filter_image(portrait, grain=True, width=int(WIDTH * (2/3)) - 20, height=int(HEIGHT * (11/24)) - 35)
+                img = filter_image(crop_face(portrait,  35, 35), grain=True, width=int(WIDTH * (2/3)) - 20, height=int(HEIGHT * (11/24)) - 35)
                 temp = filter_image("3.png", width=WIDTH, height=HEIGHT)
 
 
@@ -165,7 +190,7 @@ def create_poster(template, portrait):
 
             case "Template_5":
         
-                img = filter_image(portrait, grain=True, width=int(WIDTH * (2/3)) - 55, height=int(HEIGHT * (11/24)) - 70)
+                img = filter_image(crop_face(portrait, 35, 35), grain=True, width=int(WIDTH * (2/3)) - 55, height=int(HEIGHT * (11/24)) - 70)
                 temp = filter_image("4.png", width=WIDTH, height=HEIGHT)
 
 
@@ -221,7 +246,6 @@ name_entry = Entry(root, width=20, font=("Arial", 12))
 name_entry.place(relx=0.5, rely=0.27, anchor='center')
 name_entry.insert(0, "")
 
-
 #Entry for location
 Label(root, text="Enter Location:", bg=label_bg, fg='black', font=('Arial', 14)).place(relx=0.5, rely=0.34, anchor='center')
 location_entry = Entry(root, width=20, font=("Arial", 12))
@@ -235,15 +259,13 @@ bounty_entry = Entry(root, width=20, font=("Arial", 12))
 bounty_entry.place(relx=0.5, rely=0.51, anchor='center')
 bounty_entry.insert(0, "")
 
-
 #Button for selecting directory for portrait image
-
-select_button.place(relx=0.5, rely=0.6, anchor='center')
+select_button.place(relx=0.5, rely=0.70, anchor='center')
 
 
 #Button to finnally assemble and open poster in a new window
 create_button = ttk.Button(root, text="Generate Poster", command=lambda: create_poster(var.get(), directory))
-create_button.place(relx=0.5, rely=0.7, anchor='center')
+create_button.place(relx=0.5, rely=0.85, anchor='center')
 
 
 root.mainloop()
